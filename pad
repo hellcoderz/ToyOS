@@ -1,0 +1,24 @@
+0.5
+===
+- count, seek and skip can now use a multiplicative suffix like bs
+- stdin and stdout are now the defaults
+
+0.4beta6
+========
+- Implemented of=- for stdout
+- Renamed if=- for stdin
+- Messages are now printed to stderr
+
+0.4beta5
+========
+- If a partial block write fails, the buffer is padded to the end of the block and the write is attempted again.
+  This allows disk images which are not an exact multiple of the block size to be written to disk.
+
+0.4beta4
+========
+- Implemented if=stdin
+- added --filter=<filter> to limit the types of devices which can be written to
+  <filter> can be one of:
+    fixed	Only write to a fixed disk
+    removable	Only write to a removable disk
+    disk	Only write to any kind of disk
