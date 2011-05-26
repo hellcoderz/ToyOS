@@ -24,7 +24,7 @@ mboot:
     dd MULTIBOOT_HEADER_MAGIC
     dd MULTIBOOT_HEADER_FLAGS
     dd MULTIBOOT_CHECKSUM
-
+    
     ; AOUT kludge - must be physical addresses. Make a note of these:
     ; The linker script fills in the data for these ones!
     dd mboot
@@ -37,6 +37,8 @@ mboot:
 ; will insert an 'extern _main', followed by 'call _main', right
 ; before the 'jmp $'.
 stublet:
+    extern _main
+    call _main
     jmp $
 
 
@@ -53,5 +55,5 @@ stublet:
 ; downwards, so we declare the size of the data before declaring
 ; the identifier '_sys_stack'
 SECTION .bss
-    resb 4096               ; This reserves 8KBytes of memory here - Modified to 4KB to match the linux kernel - Kurtis 5/25/11
+    resb 4096               ; This reserves 8KBytes of memory here
 _sys_stack:
