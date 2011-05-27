@@ -42,7 +42,6 @@ struct gdt_entry gdt_entries[5];
 struct gdt_ptr gp;
 
 
-/* Setup a descriptor in the Global Descriptor Table */
 static void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsigned char access, unsigned char gran)
 {
     /* Setup the descriptor base address */
@@ -59,11 +58,7 @@ static void gdt_set_gate(int num, unsigned long base, unsigned long limit, unsig
     gdt_entries[num].access = access;
 }
 
-/* Should be called by main. This will setup the special GDT
-*  pointer, set up the first 3 entries in our GDT, and then
-*  finally call gdt_flush() in our assembler file in order
-*  to tell the processor where the new GDT is and update the
-*  new segment registers */
+
 static void gdt_install()
 {
     /* Setup the GDT pointer and limit 
@@ -151,9 +146,7 @@ static void idt_set_gate(unsigned char num, unsigned long base, unsigned int sel
 
    	idt_entries[num].sel     = sel;
    	idt_entries[num].always0 = 0;
-   	// We must uncomment the OR below when we get to using user-mode.
-   	// It sets the interrupt gate's privilege level to 3.
-   	idt_entries[num].flags   = flags /* | 0x60 */;
+   	idt_entries[num].flags   = flags 
 }
 
 
