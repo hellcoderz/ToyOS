@@ -3,3 +3,7 @@ I must be crazy for doing down this path but this is the begining of a simple to
 I've seen the linux source, read all the books, why not try it out for real?  
 
 Initially this is going to rely heavily on Bran's Kernel Development Tutorial at http://www.osdever.net/bkerndev/Docs/gettingstarted.htm
+
+Also, IDT and VM code (and alot of other guidance to be honest) are based on the excellent turotial found here: 
+ 
+http://www.jamesmolloy.co.uk/tutorial_html/index.html
