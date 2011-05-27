@@ -82,13 +82,12 @@ void putch(unsigned char c)
     unsigned short *where;
     unsigned att = attrib << 8;
 
-    /* Handle a backspace, by moving the cursor back one space */
+     /*Backspace Code*/
     if(c == 0x08)
     {
         if(csr_x != 0) csr_x--;
     }
-    /* Handles a tab by incrementing the cursor's x, but only
-    *  to a point that will make it divisible by 8 */
+  
     else if(c == 0x09)
     {
         csr_x = (csr_x + 8) & ~(8 - 1);
@@ -132,6 +131,7 @@ void putch(unsigned char c)
 }
 
 /* Uses the above routine to output a string... */
+
 void puts(unsigned char *text)
 {
     int i;
@@ -142,7 +142,72 @@ void puts(unsigned char *text)
     }
 }
 
-/* Sets the forecolor and backcolor that we will use */
+void putdec(unsigned int n)
+{
+	/* Statistically, we do NOT expect this to be 0 */
+	if(__builtin_expect((n<1), 0))
+	{
+		putch('0');
+		return;
+	}
+	else
+	{
+   	 	char c[32];
+    		int i = 0;
+    		while (n > 0)
+
+    		{
+        		c[i] = '0' + (n%10);
+        		n /= 10;
+        		i++;
+    		}
+    		c[i] = 0;
+
+    		char c2[i+1];
+   		 c2[i--] = 0;
+    		int j = 0;
+    		while(i >= 0)
+    		{
+        		c2[i--] = c[j++];
+    		}
+    		puts(c2);	
+	}
+	
+}
+
+void puthex(unsigned int n)
+{
+ 	int tmp;
+
+    puts("0x");
+    int i;
+	/* Chop our 32 bit type into groups of 4 and convert */
+    for (i = 28; i > 0; i -= 4)
+    {
+        tmp = (n >> i) & 0xF;
+  
+        if (tmp >= 0xA)
+        {
+            putch (tmp-0xA+'a' );
+        }
+        else
+        {
+            putch( tmp+'0' );
+        }
+    }
+  
+    tmp = n & 0xF;
+    if (tmp >= 0xA)
+    {
+        putch (tmp-0xA+'a');
+    }
+    else
+    {
+        putch (tmp+'0');
+    }
+}
+
+
 void settextcolor(unsigned char forecolor, unsigned char backcolor)
 {
     /* Top 4 bytes are the background, bottom 4 bytes
@@ -150,7 +215,7 @@ void settextcolor(unsigned char forecolor, unsigned char backcolor)
     attrib = (backcolor << 4) | (forecolor & 0x0F);
 }
 
-/* Sets our text-mode VGA pointer, then clears the screen for us */
+
 void init_video(void)
 {
     textmemptr = (unsigned short *)0xB8000;
