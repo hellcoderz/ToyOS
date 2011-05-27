@@ -1,10 +1,15 @@
+#include "types.h"
+
+void init_tables();
+
+/* Reduce local variables as much as possible to preserve stack space. */
+
+
 
 unsigned char *memcpy(unsigned char *dest, const unsigned char *src, int count)
 {
 	while(count--)
-	{
 		*dest++ = *src++;
-	}
     	return dest;
 }
 
@@ -55,7 +60,13 @@ void main()
 {
     /* You would add commands after here */
 
-    /* ...and leave this loop in. There is an endless loop in
-    *  'start.asm' also, if you accidentally delete this next line */
-    for (;;);
+	init_tables();
+	init_video();
+	puts("GREETINGS PROFESSOR FALKEN");
+	puts("\r\nWOULD YOU LIKE TO PLAY A GAME?\r\n");
+	puthex(12345);
+	putdec(8808);
+	asm volatile ("int $0x3");
+ 	/* busy wait */
+    	for (;;);
 }
