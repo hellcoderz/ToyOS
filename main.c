@@ -5,7 +5,6 @@ void init_tables();
 /* Reduce local variables as much as possible to preserve stack space. */
 
 
-
 unsigned char *memcpy(unsigned char *dest, const unsigned char *src, int count)
 {
 	while(count--)
@@ -66,7 +65,9 @@ void main()
 	puts("\r\nWOULD YOU LIKE TO PLAY A GAME?\r\n");
 	puthex(12345);
 	putdec(8808);
+	
 	asm volatile ("int $0x3");
+asm volatile ("int $0x4");
  	/* busy wait */
     	for (;;);
 }
