@@ -84,17 +84,17 @@ static void gdt_install()
 
 struct idt_entry
 {
-	unsigned int base_lo;
-	unsigned int sel;
+	unsigned short base_lo;
+	unsigned short sel;
 	unsigned char always0;
 	unsigned char flags;
-	unsigned int	base_hi;
+	unsigned short	base_hi;
 } __attribute__((packed));
 
 struct idt_ptr
 {
-	unsigned int limit;
-	unsigned long base;
+	unsigned short limit;
+	unsigned int base;
 } __attribute__((packed));
 
 
@@ -146,7 +146,7 @@ static void idt_set_gate(unsigned char num, unsigned long base, unsigned int sel
 
    	idt_entries[num].sel     = sel;
    	idt_entries[num].always0 = 0;
-   	idt_entries[num].flags   = flags 
+   	idt_entries[num].flags   = flags; 
 }
 
 
@@ -156,7 +156,7 @@ static void idt_install()
 	id.limit = sizeof(struct idt_entry) * 256 -1;
    	id.base  = &idt_entries;
 
-   	memsetw(&idt_entries, 0, sizeof(struct idt_entry)*256);
+   	memset(&idt_entries, 0, sizeof(struct idt_entry)*256);
 
    	idt_set_gate( 0, (unsigned long)isr0 , 0x08, 0x8E);
    	idt_set_gate( 1, (unsigned long)isr1 , 0x08, 0x8E);
@@ -191,9 +191,12 @@ static void idt_install()
 	idt_set_gate( 30, (unsigned long)isr30 , 0x08, 0x8E);
 	idt_set_gate( 31, (unsigned long)isr31 , 0x08, 0x8E);
 
-   	idt_flush((unsigned long)&id);
+
+   	idt_flush();
 
 }
+
+extern void idt_flush();
 
 
 
