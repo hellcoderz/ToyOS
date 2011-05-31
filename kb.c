@@ -1,4 +1,7 @@
-#include "isr.h"
+ #include "isr.h"
+
+#define RSHIFT 54;
+#define LSHIFT 42;
 
 unsigned char US_KEYBOARD_LAYOUT[128] =
 {
@@ -40,18 +43,79 @@ unsigned char US_KEYBOARD_LAYOUT[128] =
     0,	/* All other keys are undefined */
 };
 
+unsigned char US_KEYBOARD_LAYOUT_UPPER[128] =
+{
+0,  0, '!', '"', '£', '$', '%', '^', '&', '*',   /* 9 */
+  '(', ')', '_', '+', '\b', '\t',
+  'Q', 'W', 'E', 'R',
+  'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',      /* Enter key */
+    0,         /* 29   - Control */
+  'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';',   /* 39 */
+'|', '¬',   42,      /* Left shift */
+'\\', 'Z', 'X', 'C', 'V', 'B', 'N',         /* 49 */
+  'M', '<', '>', '?',   0,               /* Right shift */
+  0,
+    0,   /* Alt */
+  ' ',   /* Space bar */
+    58,   /* Caps lock */
+    0,   /* 59 - F1 key ... > */
+    0,   0,   0,   0,   0,   0,   0,   0,
+    0,   /* < ... F10 */
+    0,   /* 69 - Num lock*/
+    0,   /* Scroll Lock */
+    0,   /* Home key */
+    0,   /* Up Arrow */
+    0,   /* Page Up */
+  '-',
+    0,   /* Left Arrow */
+    0,
+    0,   /* Right Arrow */
+  '+',
+    0,   /* 79 - End key*/
+    0,   /* Down Arrow */
+    0,   /* Page Down */
+    0,   /* Insert Key */
+    0,   /* Delete Key */
+    0,   0,   0,
+    0,   /* F11 Key */
+    0,   /* F12 Key */
+    0,   /* All other keys are undefined */
+};
+
+
 
 static void keydown_callback(registers_t regs)
 {
-   unsigned char scancode;
+    /* Declared volatile to prevent caching of the variable value in memory.  That would be bad and this loop would never break...*/
+   volatile unsigned char scancode;
+   unsigned char statuscode;
    scancode = inportb(0x60);
+   statuscode = inportb(0x64);
+   volatile unsigned int scanint = scancode;
+   unsigned int uppercase = 0;
+   /*   This is crude but mostly for testing.
+        If we read a shift, busywait until we get a non-shift character and set our uppercase flag to true */
+   while(scanint == 54 || scanint == 42)
+   {
+        uppercase = 1;
+        scancode = inportb(0x60);
+        statuscode = inportb(0x64);
+        scanint = scancode;
+   }
    if(scancode & 0x80)
    {
-
+        /* Ignore this for now */
    }
    else
    {
-  	putch(US_KEYBOARD_LAYOUT[scancode]);
+       if(uppercase == 1)
+       {
+           putch(US_KEYBOARD_LAYOUT_UPPER[scancode]);
+       }
+       else
+       {
+	        putch(US_KEYBOARD_LAYOUT[scancode]);
+       }
    }
 }
 
